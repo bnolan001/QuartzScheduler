@@ -21,7 +21,9 @@ namespace QuartzScheduler.Api.Extensions
                 {
                     var jobDetail = await scheduler.GetJobDetail(jobKey);
                     var jobSchedule = await scheduler.GetTriggersOfJob(jobKey);
-                    if (jobDetail != null && jobSchedule != null)
+                    if (jobDetail != null
+                        && jobSchedule != null
+                        && jobSchedule.Count > 0)
                     {
                         definedJobDetails.Add(new JobDetailsDto(
                             jobDetail.Key.Name,

@@ -20,6 +20,7 @@ namespace QuartzScheduler.Jobs.AviationWeather
             try
             {
                 var icao = context.MergedJobDataMap["icao"].ToString();
+                _logger.LogInformation($"---------------------------------------------------");
                 _logger.LogInformation($"{this.GetType().Name} starting execution of {icao}");
                 var sw = new Stopwatch();
                 sw.Start();
@@ -39,7 +40,7 @@ namespace QuartzScheduler.Jobs.AviationWeather
 
                 sw.Stop();
                 _logger.LogInformation($"{this.GetType().Name} completed execution of {context.MergedJobDataMap["icao"]} in {sw.Elapsed.TotalMilliseconds} milliseconds");
-
+                _logger.LogInformation($"---------------------------------------------------");
             }
             catch (Exception ex)
             {

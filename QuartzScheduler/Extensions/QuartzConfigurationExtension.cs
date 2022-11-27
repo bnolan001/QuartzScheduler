@@ -12,7 +12,7 @@ namespace QuartzScheduler.Extensions
                 q.UseMicrosoftDependencyInjectionJobFactory();
 
                 // Set up the once daily job for downloading forecast
-                // Job will execute at 09:15 each day
+                // Job will execute at 08:15 each day
                 var jobMap = new JobDataMap(){
                         new KeyValuePair<string, object>("icao", "KPHL") };
                 var jobKey = new JobKey("fcstJob", "dailyJob");
@@ -31,11 +31,13 @@ namespace QuartzScheduler.Extensions
                     j.WithDescription($"Retrieves METAR for {jobMap["icao"]} hourly")
                     .UsingJobData(jobMap));
 
-                var now = DateTime.Now.AddHours(-1);
-                var startTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, 15, 0);
+                // Set up the start time to be the previous hour so we execute right away as well
+                // as the 15 after the hour going forward
+                var previousHour = DateTime.Now.AddHours(-1);
+                var startTime = new DateTime(previousHour.Year, previousHour.Month, previousHour.Day, previousHour.Hour, 15, 0);
                 q.AddTrigger(t =>
                     t.ForJob(jobKey)
-                    .StartAt(now)
+                    .StartAt(startTime)
                     .WithSimpleSchedule(x =>
                         x.WithIntervalInHours(1)
                         .RepeatForever())
