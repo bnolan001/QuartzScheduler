@@ -9,6 +9,7 @@ namespace QuartzScheduler.Extensions
         {
             services.AddQuartz(q =>
             {
+                // Inject Quartz Service for usage in the API
                 q.UseMicrosoftDependencyInjectionJobFactory();
 
                 // Set up the once daily job for downloading forecast

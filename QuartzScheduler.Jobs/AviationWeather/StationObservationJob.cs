@@ -20,7 +20,7 @@ namespace QuartzScheduler.Jobs.AviationWeather
             {
                 var icao = context.MergedJobDataMap["icao"].ToString();
                 _logger.LogInformation($"---------------------------------------------------");
-                _logger.LogInformation($"{this.GetType().Name} starting execution of ${icao}");
+                _logger.LogInformation($"{this.GetType().Name} starting execution of {icao}");
                 var sw = new Stopwatch();
                 sw.Start();
 
