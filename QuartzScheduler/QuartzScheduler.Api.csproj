@@ -25,8 +25,4 @@
     <ProjectReference Include="..\QuartzScheduler.Jobs\QuartzScheduler.Jobs.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\Enums\" />
-  </ItemGroup>
-
 </Project>

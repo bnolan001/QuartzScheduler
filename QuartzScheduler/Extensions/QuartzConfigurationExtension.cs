@@ -1,5 +1,6 @@
 ﻿using Quartz;
 using QuartzScheduler.Jobs.AviationWeather;
+using QuartzScheduler.Jobs.AviationWeather.Models.Enums;
 
 namespace QuartzScheduler.Extensions
 {
@@ -15,10 +16,10 @@ namespace QuartzScheduler.Extensions
                 // Set up the once daily job for downloading forecast
                 // Job will execute at 08:15 each day
                 var jobMap = new JobDataMap(){
-                        new KeyValuePair<string, object>("icao", "KPHL") };
+                        new KeyValuePair<string, object>(JobMapKeysEnum.ICAO.Name, "KPHL") };
                 var jobKey = new JobKey("fcstJob", "dailyJob");
                 q.AddJob<StationForecastJob>(jobKey, j =>
-                    j.WithDescription($"Retrieves TAF for {jobMap["icao"]} every once a day")
+                    j.WithDescription($"Retrieves TAF for {jobMap[JobMapKeysEnum.ICAO.Name]} every once a day")
                     .UsingJobData(jobMap));
 
                 q.AddTrigger(t =>
@@ -29,7 +30,7 @@ namespace QuartzScheduler.Extensions
                 // Set up an hourly job to get the latest observation on 15 minutes past the hour
                 jobKey = new JobKey("obsJob", "hourlyJob");
                 q.AddJob<StationObservationJob>(jobKey, j =>
-                    j.WithDescription($"Retrieves METAR for {jobMap["icao"]} hourly")
+                    j.WithDescription($"Retrieves METAR for {jobMap[JobMapKeysEnum.ICAO.Name]} hourly")
                     .UsingJobData(jobMap));
 
                 // Set up the start time to be the previous hour so we execute right away as well

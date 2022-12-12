@@ -2,6 +2,7 @@
 using BNolan.AviationWx.NET.Models.Enums;
 using Microsoft.Extensions.Logging;
 using Quartz;
+using QuartzScheduler.Jobs.AviationWeather.Models.Enums;
 using System.Diagnostics;
 
 namespace QuartzScheduler.Jobs.AviationWeather
@@ -18,7 +19,7 @@ namespace QuartzScheduler.Jobs.AviationWeather
         {
             try
             {
-                var icao = context.MergedJobDataMap.GetString("icao");
+                var icao = context.MergedJobDataMap.GetString(JobMapKeysEnum.ICAO.Name);
                 _logger.LogInformation($"---------------------------------------------------");
                 _logger.LogInformation($"{this.GetType().Name} starting execution of {icao}");
                 var sw = new Stopwatch();
@@ -39,7 +40,7 @@ namespace QuartzScheduler.Jobs.AviationWeather
                 }
 
                 sw.Stop();
-                _logger.LogInformation($"{this.GetType().Name} completed execution of {context.MergedJobDataMap["icao"]} in {sw.Elapsed.TotalMilliseconds} milliseconds");
+                _logger.LogInformation($"{this.GetType().Name} completed execution of {icao} in {sw.Elapsed.TotalMilliseconds} milliseconds");
                 _logger.LogInformation($"---------------------------------------------------");
             }
             // Catch all exceptions, otherwise the job may re-execute immediately after finishing
