@@ -17,6 +17,9 @@ builder.Host.UseSerilog();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Extension method to configure the jobs that will be executed by the Quartz
+// scheduler engine
 builder.Services.AddQuartzScheduler(builder.Configuration);
 
 var app = builder.Build();
@@ -30,6 +33,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Extension method where the API endpoints are defined
 app.AddApiControllers();
 
 app.Run();

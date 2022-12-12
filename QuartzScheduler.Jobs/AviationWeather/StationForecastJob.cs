@@ -19,7 +19,7 @@ namespace QuartzScheduler.Jobs.AviationWeather
         {
             try
             {
-                var icao = context.MergedJobDataMap["icao"].ToString();
+                var icao = context.MergedJobDataMap.GetString("icao");
                 _logger.LogInformation($"---------------------------------------------------");
                 _logger.LogInformation($"{this.GetType().Name} starting execution of {icao}");
                 var sw = new Stopwatch();
@@ -42,6 +42,7 @@ namespace QuartzScheduler.Jobs.AviationWeather
                 _logger.LogInformation($"{this.GetType().Name} completed execution of {context.MergedJobDataMap["icao"]} in {sw.Elapsed.TotalMilliseconds} milliseconds");
                 _logger.LogInformation($"---------------------------------------------------");
             }
+            // Catch all exceptions, otherwise the job may re-execute immediately after finishing
             catch (Exception ex)
             {
                 _logger.LogError("Failed to execute job", ex);
