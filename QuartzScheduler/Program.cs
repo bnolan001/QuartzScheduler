@@ -20,7 +20,7 @@ builder.Services.AddSwaggerGen();
 
 // Extension method to configure the jobs that will be executed by the Quartz
 // scheduler engine
-builder.Services.AddQuartzScheduler(builder.Configuration);
+builder.Services.AddQuartzScheduler();
 
 var app = builder.Build();
 

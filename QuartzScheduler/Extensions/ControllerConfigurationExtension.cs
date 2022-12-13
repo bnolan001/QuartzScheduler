@@ -2,6 +2,7 @@
 using Quartz;
 using Quartz.Impl.Matchers;
 using QuartzScheduler.Api.Models;
+using QuartzScheduler.Jobs.AviationWeather.Models.Enums;
 using Serilog;
 using System.Text.Json;
 
@@ -57,7 +58,7 @@ namespace QuartzScheduler.Api.Extensions
                 // Create the job based off of the parent job but set new job data and description
                 var newJob = parentJob.GetJobBuilder().SetJobData(new JobDataMap()
                     {
-                        new KeyValuePair<string, object>("icao", jobCreate.Icao)
+                        new KeyValuePair<string, object>(JobMapKeysEnum.ICAO.Name, jobCreate.Icao)
                     }).WithDescription(jobCreate.Description)
                     .WithIdentity(jobKey)
                     .Build();
