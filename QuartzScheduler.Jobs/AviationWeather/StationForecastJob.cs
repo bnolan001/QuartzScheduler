@@ -22,6 +22,13 @@ namespace QuartzScheduler.Jobs.AviationWeather
             {
                 var icao = context.MergedJobDataMap.GetString(JobMapKeysEnum.ICAO.Name);
                 _logger.LogInformation($"---------------------------------------------------");
+
+                if (string.IsNullOrWhiteSpace(icao))
+                {
+                    _logger.LogWarning($"Job ICAO is null or empty for job {context.JobDetail.Key.Name}-{context.JobDetail.Key.Group}");
+                    return;
+                }
+
                 _logger.LogInformation($"{this.GetType().Name} starting execution of {icao}");
                 var sw = new Stopwatch();
                 sw.Start();

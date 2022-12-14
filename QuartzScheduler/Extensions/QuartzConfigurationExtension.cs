@@ -19,7 +19,7 @@ namespace QuartzScheduler.Extensions
                 var jobMap = new JobDataMap(){
                         new KeyValuePair<string, object>(JobMapKeysEnum.ICAO.Name, "KPHL") };
                 q.AddJob<StationForecastJob>(jobKey, j =>
-                    j.WithDescription($"Retrieves TAF for {jobMap[JobMapKeysEnum.ICAO.Name]} every once a day")
+                    j.WithDescription($"Retrieves TAF for {jobMap[JobMapKeysEnum.ICAO.Name]} once a day")
                     .UsingJobData(jobMap));
 
                 q.AddTrigger(t =>
