@@ -42,7 +42,7 @@ namespace QuartzScheduler.Api.Extensions
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError("Failed to retrieve job schedules.", ex);
+                    logger.LogError(ex, "Failed to retrieve job schedules.");
                     return Results.StatusCode((int)HttpStatusCode.InternalServerError);
                 }
             }).WithName("GetJobSchedules");
@@ -87,7 +87,7 @@ namespace QuartzScheduler.Api.Extensions
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError("Failed to add job to the schedule.", ex);
+                    logger.LogError(ex, "Failed to add job to the schedule.");
                     return Results.StatusCode((int)HttpStatusCode.InternalServerError);
                 }
             }).WithName("CreateJobSchedule");

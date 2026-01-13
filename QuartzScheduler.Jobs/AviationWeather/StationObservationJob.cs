@@ -1,6 +1,4 @@
-﻿using BNolan.AviationWx.NET.Models.DTOs;
-using BNolan.AviationWx.NET.Models.Enums;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Quartz;
 using QuartzScheduler.Jobs.AviationWeather.Models.Enums;
 using System.Diagnostics;
@@ -10,6 +8,7 @@ namespace QuartzScheduler.Jobs.AviationWeather
     public class StationObservationJob : IJob
     {
         private readonly ILogger<StationObservationJob> _logger;
+        private static readonly HttpClient _httpClient = new HttpClient();
 
         public StationObservationJob(ILogger<StationObservationJob> logger)
         {
@@ -37,7 +36,7 @@ namespace QuartzScheduler.Jobs.AviationWeather
                     var obs = await GetLatestObservationAsync(icao);
 
                     if (obs != null)
-                        _logger.LogInformation($"Latest observation for '{icao}': {obs.RawMETAR}");
+                        _logger.LogInformation($"Latest observation for '{icao}': {obs}");
                     else
                         _logger.LogInformation($"Unable to find an observation for '{icao}'");
                 }
@@ -53,16 +52,16 @@ namespace QuartzScheduler.Jobs.AviationWeather
             // Catch all exceptions, otherwise the job may re-execute immediately after finishing
             catch (Exception ex)
             {
-                _logger.LogError("Failed to execute job", ex);
+                _logger.LogError(ex, "Failed to execute job");
             }
         }
 
-        public async Task<METARDto?> GetLatestObservationAsync(string icao)
+        public async Task<string?> GetLatestObservationAsync(string icao)
         {
-            var aviationParser = new BNolan.AviationWx.NET.AviationWeather(ParserType.CSV);
-            var obs = await aviationParser.GetLatestObservationAsync(new[] { icao });
+            var request = await _httpClient.GetAsync($"https://aviationweather.gov/api/data/metar?ids={icao}&format=raw&taf=false&hours=1");
+            var metar = await request.Content.ReadAsStringAsync();
 
-            return obs.FirstOrDefault()?.METAR.FirstOrDefault();
+            return metar;
         }
     }
 }
