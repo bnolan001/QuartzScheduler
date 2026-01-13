@@ -1,6 +1,4 @@
-﻿using BNolan.AviationWx.NET.Models.DTOs;
-using BNolan.AviationWx.NET.Models.Enums;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Quartz;
 using QuartzScheduler.Jobs.AviationWeather.Models.Enums;
 using System.Diagnostics;
@@ -10,6 +8,7 @@ namespace QuartzScheduler.Jobs.AviationWeather
     public class StationForecastJob : IJob
     {
         private readonly ILogger<StationForecastJob> _logger;
+        private static readonly HttpClient _httpClient = new HttpClient();
 
         public StationForecastJob(ILogger<StationForecastJob> logger)
         {
@@ -37,7 +36,7 @@ namespace QuartzScheduler.Jobs.AviationWeather
                 {
                     var taf = await GetLatestForecastAsync(icao);
                     if (taf != null)
-                        _logger.LogInformation($"Latest forecast for '{icao}': {taf.RawTAF}");
+                        _logger.LogInformation($"Latest forecast for '{icao}': {taf}");
                     else
                         _logger.LogInformation($"Unable to find a forecast for '{icao}'");
                 }
@@ -53,17 +52,17 @@ namespace QuartzScheduler.Jobs.AviationWeather
             // Catch all exceptions, otherwise the job may re-execute immediately after finishing
             catch (Exception ex)
             {
-                _logger.LogError("Failed to execute job", ex);
+                _logger.LogError(ex, "Failed to execute job");
             }
         }
 
 
-        public async Task<TAFDto?> GetLatestForecastAsync(string icao)
+        public async Task<string?> GetLatestForecastAsync(string icao)
         {
-            var aviationParser = new BNolan.AviationWx.NET.AviationWeather(ParserType.CSV);
-            var fcst = await aviationParser.GetLatestForecastsAsync(new[] { icao });
+            var request = await _httpClient.GetAsync($"https://aviationweather.gov/api/data/taf?ids={icao}&format=raw");
+            var fcst = await request.Content.ReadAsStringAsync();
 
-            return fcst.FirstOrDefault()?.TAF.FirstOrDefault();
+            return fcst;
         }
     }
 }
